@@ -5,6 +5,121 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Chat App - Layout with Attach Buttons</title>
   <style>
+    /* From Uiverse.io by alexroumi */ 
+    /* From Uiverse.io by Admin12121 */ 
+.menu {
+  padding: 0.5rem;
+  background-color: #fff;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px 0 rgba(#000, 0.075);
+}
+
+.link {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 70px;
+  height: 50px;
+  border-radius: 8px;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  transform-origin: center left;
+  transition: width 0.2s ease-in;
+  text-decoration: none;
+  color: inherit;
+  &:before {
+    position: absolute;
+    z-index: -1;
+    content: "";
+    display: block;
+    border-radius: 8px;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    transform: translateX(100%);
+    transition: transform 0.2s ease-in;
+    transform-origin: center right;
+    background-color: #eee;
+  }
+
+  &:hover,
+  &:focus {
+    outline: 0;
+    width: 130px;
+
+    &:before,
+    .link-title {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+}
+
+.link-icon {
+  width: 28px;
+  height: 28px;
+  display: block;
+  flex-shrink: 0;
+  left: 18px;
+  position: absolute;
+  svg {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+.link-title {
+  transform: translateX(100%);
+  transition: transform 0.2s ease-in;
+  transform-origin: center right;
+  display: block;
+  text-align: center;
+  text-indent: 28px;
+  width: 100%;
+}
+
+button {
+ padding: 15px 25px;
+ border: unset;
+ border-radius: 15px;
+ color: #212121;
+ z-index: 1;
+ background: #e8e8e8;
+ position: relative;
+ font-weight: 1000;
+ font-size: 17px;
+ -webkit-box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+ box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+ transition: all 250ms;
+ overflow: hidden;
+}
+
+button::before {
+ content: "";
+ position: absolute;
+ top: 0;
+ left: 0;
+ height: 100%;
+ width: 0;
+ border-radius: 15px;
+ background-color: #212121;
+ z-index: -1;
+ -webkit-box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+ box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+ transition: all 250ms
+}
+
+button:hover {
+ color: #e8e8e8;
+}
+
+button:hover::before {
+ width: 100%;
+}
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
@@ -364,15 +479,8 @@
       <div class="app-logo"></div>
       <div class="app-name">CatchUp</div>
     </div>
-    <div class="navbar-right">
-      <div class="user-profile-pic" title="Your Profile"></div>
-      <svg class="status-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" title="WiFi">
-        <path d="M12 18c1.1 0 2-.9 2-2h-4a2 2 0 0 0 2 2zm6.36-2.79c-1.16-1.12-2.73-1.83-4.36-1.83s-3.2.7-4.36 1.83l-1.44-1.44a7.992 7.992 0 0 1 12.6 0l-1.44 1.44zM12 3C7.73 3 4.06 5.11 1.64 8.45l1.44 1.44a9.99 9.99 0 0 1 18.84 0l1.44-1.44C19.94 5.11 16.27 3 12 3z"/>
-      </svg>
-      <svg class="status-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" title="Battery">
-        <path d="M16 7h-1V5a3 3 0 0 0-6 0v2H8a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2zm-3 0h-2V5a1 1 0 0 1 2 0v2z"/>
-      </svg>
-    </div>
+ 
+
   </div>
 
   <div class="app-container">
@@ -397,7 +505,9 @@
         <div class="unread-count">1</div>
       </div>
 
-      <div class="add-friend">+ Add Friend</div>
+      <div class="add-friend"><!-- From Uiverse.io by alexroumi --> 
+<button> Add Friend
+</button></div>
     </div>
 
     <div class="chat-section">
