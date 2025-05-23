@@ -58,7 +58,8 @@ form {
 }
 
 input[type="text"],
-input[type="email"] {
+input[type="email"],
+input[type="password"] {
   padding: 12px;
   margin: 10px 0;
   border: 1px solid #ccc;
