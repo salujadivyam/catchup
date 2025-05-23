@@ -1,0 +1,81 @@
+* {
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+  background-color: #f0f2f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.container {
+  background: #fff;
+  padding: 40px 30px;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.tab {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.tab label {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  cursor: pointer;
+  background: #eee;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+input[type="radio"] {
+  display: none;
+}
+
+#signin:checked ~ .form-container .signin-form,
+#signup:checked ~ .form-container .signup-form {
+  display: flex;
+}
+
+#signin:checked ~ .tab label[for="signin"],
+#signup:checked ~ .tab label[for="signup"] {
+  background-color: #007bff;
+  color: white;
+}
+
+form {
+  display: none;
+  flex-direction: column;
+}
+
+input[type="text"],
+input[type="email"] {
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+button {
+  padding: 12px;
+  background-color: #007bff;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}

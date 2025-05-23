@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="{% static 'catchup/style.css' %}">
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chat App | Login</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="container">
+  <!-- Radio Toggle Tabs -->
+  <input type="radio" id="signin" name="tab" checked>
+  <input type="radio" id="signup" name="tab">
+
+  <div class="tab">
+    <label for="signin">Sign In</label>
+    <label for="signup">Sign Up</label>
+  </div>
+
+  <div class="form-container">
+    <!-- Sign In Form -->
+    <form class="signin-form" action="/chat/" method="GET">
+      <input type="text" name="username" placeholder="Username" required>
+      <input type="email" name="gmail" placeholder="Gmail" required>
+      <button type="submit">Sign In</button>
+    </form>
+
+    <!-- Sign Up Form -->
+    <form class="signup-form" action="/signup/" method="POST">
+      <input type="text" name="new_username" placeholder="Choose Username" required>
+      <input type="email" name="new_gmail" placeholder="Your Gmail" required>
+      <button type="submit">Sign Up</button>
+    </form>
+  </div>
+</div>
+
+</body>
+</html>
