@@ -21,18 +21,37 @@
 
   <div class="form-container">
     <!-- Sign In Form -->
-    <form class="signin-form" action="/chat/" method="GET">
+    <form class="signin-form" action="{% url 'login' %}" method="POST">
+      {% csrf_token %}
       <input type="text" name="username" placeholder="Username" required>
       <input type="password" name="password" placeholder="Password" required>
       <button type="submit">Sign In</button>
+      <br>
+      <small>
+        {% if login_message %}
+        <div>{{ login_message }}</div>
+        {% endif %}
+      </small>
     </form>
 
     <!-- Sign Up Form -->
-    <form class="signup-form" action="/signup/" method="POST">
+    <form class="signup-form" action="{% url 'signup' %}" method="POST">
+      {% csrf_token %}
       <input type="email" name="gmail" placeholder="Your Gmail" required>
       <input type="text" name="username" placeholder="Choose Username" required>
       <input type="password" name="password" placeholder="Create Password" required>
       <button type="submit">Sign Up</button>
+      <br>
+      <small>
+        {% if signup_message %}
+        <div>{{ signup_message }}</div>
+        {% endif %}
+      </small>
+      <small>
+        {% if message %}
+        <div>{{ message }}</div>
+        {% endif %}
+      </small>
     </form>
   </div>
 </div>
