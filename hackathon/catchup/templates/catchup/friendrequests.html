@@ -1,0 +1,19 @@
+{% extends "catchup/chat_page_dark.html" %}
+
+{% block body %}
+<h1>friend requests</h1>
+<ul>
+{% for request in friendreqs %}
+    <li>{{ request.username }}</li>
+{% endfor %}
+</ul>
+<br>
+
+<h1>friends</h1>
+<ul>
+{% for friend in friends %}
+    <li>{{ friend.username }}</li>
+{% endfor %}
+</ul>
+
+{% endblock %}

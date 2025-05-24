@@ -78,3 +78,25 @@ def logout_view(request):
 def chatroom(request, id):
 
     return 
+
+def friends(request):
+    user = request.user
+    friends = FriendRequest.objects.filter(
+            Q(from_user=user) | Q(to_user=user),
+            accepted=True
+        )
+    friend_users = []
+    for fr in friends:
+        friend_users.append(fr.to_user if fr.from_user == user else fr.from_user)
+
+    friendreqs = FriendRequest.objects.filter(
+                Q(from_user=user) | Q(to_user=user),
+                accepted=False
+            )
+    friendreq_users = []
+    for fr in friendreqs:
+        friendreq_users.append(fr.to_user if fr.from_user == user else fr.from_user)
+    return render(request, 'catchup/friendrequests.html', {
+        "friends": friend_users,
+        "friendreqs": friendreq_users
+    })
