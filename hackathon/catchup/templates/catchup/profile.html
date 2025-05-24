@@ -2,6 +2,139 @@
 
 {% block body %}
 <!-- all the code goes here between the 2 white lines of code -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Profile</title>
+  <style>
+    body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #0f1123; /* dark navy background */
+  color: #ffffff;
+}
+
+.profile-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.profile-card {
+  background: #1c1e30; /* slightly lighter navy card */
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+}
+
+.profile-pic {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 20px;
+  border: 3px solid #6c63ff; /* purplish accent border */
+}
+
+.username {
+  margin: 10px 0 5px;
+  font-size: 22px;
+  color: #ffffff;
+}
+
+.email {
+  font-size: 14px;
+  color: #cccccc;
+  margin-bottom: 20px;
+}
+
+.profile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-btn {
+  background-color: #6c63ff;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.profile-btn:hover {
+  background-color: #554be3;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+label.upload-label {
+  background-color: #6c63ff;
+  color: white;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+label.upload-label:hover {
+  background-color: #554be3;
+}
+
+  </style>
+</head>
+<body>
+<!-- 
+    
+
+
+
+
+You must pass the user context (current authenticated user) to this template.
+
+Ensure user.profile_picture.url is accessible. You can achieve this by extending Django's default user model or using a Profile model with a OneToOneField.
+
+change_username and change_profile_picture should be Django URL names mapped to views that handle form processing.
+
+
+
+
+-->
+  <div class="profile-container">
+    <div class="profile-card">
+      <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="profile-pic">
+      <h2 class="username">{{ user.username }}</h2>
+      <p class="email">{{ user.email }}</p>
+
+      <div class="profile-actions">
+        <form method="POST" action="{% url 'change_username' %}">
+          {% csrf_token %}
+          <button class="profile-btn" type="submit">Change Username</button>
+        </form>
+
+        <form method="POST" action="{% url 'change_profile_picture' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          <label for="profile-pic-upload" class="upload-label">Upload New Picture</label>
+          <input type="file" name="profile_picture" id="profile-pic-upload" onchange="this.form.submit()">
+        </form>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
 
 
 
