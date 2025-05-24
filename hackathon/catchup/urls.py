@@ -10,4 +10,5 @@ urlpatterns = [
     path("friends", views.friends, name="friends"),
     path("addfriend", views.addfriend, name="addfriend"),
     path("chatroom/<int:id>", views.chatroom, name="chatroom"),
+    path("acceptfriend", views.acceptfriend, name="acceptfriend")
 ]

@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import JsonResponse
-from django.shortcuts import HttpResponse, HttpResponseRedirect, render
+from django.shortcuts import HttpResponse, HttpResponseRedirect, render, get_object_or_404
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
@@ -81,25 +81,52 @@ def chatroom(request, id):
 
 def friends(request):
     user = request.user
-    friends = FriendRequest.objects.filter(
-            Q(from_user=user) | Q(to_user=user),
-            accepted=True
-        )
-    friend_users = []
-    for fr in friends:
-        friend_users.append(fr.to_user if fr.from_user == user else fr.from_user)
 
-    friendreqs = FriendRequest.objects.filter(
-                Q(from_user=user) | Q(to_user=user),
-                accepted=False
-            )
-    friendreq_users = []
-    for fr in friendreqs:
-        friendreq_users.append(fr.to_user if fr.from_user == user else fr.from_user)
-    return render(request, 'catchup/friendrequests.html', {
-        "friends": friend_users,
-        "friendreqs": friendreq_users
+    # Get all pending requests sent TO the current user
+    friend_requests = FriendRequest.objects.filter(to_user=user, accepted=False)
+
+    # Get all accepted friends (optional, if you also display the friend list)
+    friends = FriendRequest.objects.filter(
+        Q(from_user=user) | Q(to_user=user),
+        accepted=True
+    )
+    friend_users = [fr.to_user if fr.from_user == user else fr.from_user for fr in friends]
+
+    return render(request, "catchup/friendrequests.html", {
+        "friendreqs": friend_requests,
+        "friends": friend_users
     })
 
 def addfriend(request):
-    return
+    if request.method == "POST":
+        username = request.POST.get("username")
+        if not username:
+            return JsonResponse({"success": False, "error": "Username is required."})
+
+        try:
+            to_user = User.objects.get(username=username)
+            from_user = request.user
+
+            if to_user == from_user:
+                return JsonResponse({"success": False, "error": "You cannot send a friend request to yourself."})
+
+            if FriendRequest.objects.filter(from_user=from_user, to_user=to_user).exists():
+                return JsonResponse({"success": False, "error": "Friend request already sent."})
+
+            FriendRequest.objects.create(from_user=from_user, to_user=to_user)
+            return JsonResponse({"success": True, "message": "Friend request sent."})
+        except User.DoesNotExist:
+            return JsonResponse({"success": False, "error": "User not found."})
+    else:
+        return JsonResponse({"success": False, "error": "Invalid request method."})
+    
+def acceptfriend(request):
+    if request.method == "POST":
+        request_id = request.POST.get("request_id")
+        friend_request = get_object_or_404(FriendRequest, id=request_id, to_user=request.user)
+
+        friend_request.accepted = True
+        friend_request.save()
+
+        return JsonResponse({"success": True, "message": "Friend request accepted."})
+    return JsonResponse({"success": False, "error": "Invalid request."})

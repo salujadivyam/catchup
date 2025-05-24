@@ -4,10 +4,19 @@
 <h1>friend requests</h1>
 <ul>
 {% for request in friendreqs %}
-    <li>{{ request.username }}</li>
+  <li>{{ request.from_user.username }}</li>
+  {% if user.id == request.to_user.id %}
+    <button onclick="acceptRequest('{{ request.id }}')">Accept</button>
+  {% else %}
+    <p>(Pending)</p>
+  {% endif %}
+{% empty %}
+  <li>No friend requests</li>
 {% endfor %}
 </ul>
 <br>
+
+<hr>
 
 <h1>friends</h1>
 <ul>
@@ -15,5 +24,44 @@
     <li>{{ friend.username }}</li>
 {% endfor %}
 </ul>
+
+<script>
+  function acceptRequest(requestId) {
+    fetch("{% url 'acceptfriend' %}", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+      body: `request_id=${requestId}`
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert("Friend request accepted!");
+        location.reload();  // refresh the page to update list
+      } else {
+        alert("Error: " + data.error);
+      }
+    });
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === (name + "=")) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+</script>
+
 
 {% endblock %}
