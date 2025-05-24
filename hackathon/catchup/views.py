@@ -6,12 +6,26 @@ from django.http import JsonResponse
 from django.shortcuts import HttpResponse, HttpResponseRedirect, render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-from .models import User
+from django.db.models import Q
+from .models import User, Message, UserProfile, FriendRequest
 
 # Create your views here.
 def index(request):
     if request.user.is_authenticated:
-        return render(request, "catchup/chat_page_dark.html")
+        user = request.user
+        friends = FriendRequest.objects.filter(
+            Q(from_user=user) | Q(to_user=user),
+            accepted=True
+        )
+        friend_users = []
+        for fr in friends:
+            friend_users.append(fr.to_user if fr.from_user == user else fr.from_user)
+
+
+        return render(request, "catchup/chat_page_dark.html", {
+            "user": user.username,
+            "friends": friend_users
+        })
     else:
         return HttpResponseRedirect(reverse("login"))
 
@@ -56,3 +70,11 @@ def signup(request):
             })
         login(request, user)
         return HttpResponseRedirect(reverse("index"))
+    
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse("login"))
+
+def chatroom(request, id):
+
+    return 
