@@ -158,6 +158,8 @@ button:hover::before {
       font-weight: 600;
       font-size: 1.1rem;
       user-select: none;
+      padding:  20px;
+      margin-right: 150px;
     }
 
     .navbar-right {
@@ -214,8 +216,8 @@ button:hover::before {
     }
 
     .friend-avatar {
-      width: 30px;
-      height: 30px;
+      width: 40px;
+      height: 40px;
       background-color: #445997;
       border-radius: 50%;
       margin-right: 10px;
@@ -268,11 +270,10 @@ button:hover::before {
     }
 
     .add-friend {
-      margin: auto 15px 15px 15px;
+      margin: auto 5px 5px 5px;
       padding: 10px;
-      background-color: transparent;
-      color: #ffffff;
-      border: 2px solid #445997;
+      background-color:transparent;
+      color: #4b0768;
       border-radius: 8px;
       text-align: center;
       cursor: pointer;
@@ -312,6 +313,7 @@ button:hover::before {
     }
 
     .chat-user-name {
+      margin-left: 1px;
       font-weight: 600;
       font-size: 1.1rem;
       color: white;
@@ -320,9 +322,10 @@ button:hover::before {
     .chat-user-last-seen {
       font-size: 0.75rem;
       color: #8a8d9f;
-      margin-left: 52px;
+      margin-left: 2px;
       margin-top: 2px;
       user-select: none;
+      
     }
 
     .chat-options-button {
@@ -469,6 +472,149 @@ button:hover::before {
     input[type="file"] {
       display: none;
     }
+    /* From Uiverse.io by Admin12121 */ 
+.menu {
+  padding: 0.5rem;
+  background-color: #8416e5;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px 0 rgba(#000, 0.075);
+  width: 1000px;
+  height: 30px;
+}
+
+.link {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 70px;
+  height: 30px;
+  border-radius: 8px;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  transform-origin: center left;
+  transition: width 0.2s ease-in;
+  text-decoration: none;
+  color: inherit;
+  &:before {
+    position: absolute;
+    z-index: -1;
+    content: "";
+    display: block;
+    border-radius: 8px;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    transform: translateX(100%);
+    transition: transform 0.2s ease-in;
+    transform-origin: center right;
+    background-color: #68069c;
+  }
+
+  &:hover,
+  &:focus {
+    outline: 0;
+    width: 130px;
+
+    &:before,
+    .link-title {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+}
+
+.link-icon {
+  width: 28px;
+  height: 28px;
+  display: block;
+  flex-shrink: 0;
+  left: 18px;
+  position: absolute;
+  svg {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+.link-title {
+  transform: translateX(100%);
+  transition: transform 0.2s ease-in;
+  transform-origin: center right;
+  display: block;
+  text-align: center;
+  text-indent: 28px;
+  width: 100%;
+}
+.popup-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup {
+  background-color: white;
+  padding: 25px 30px;
+  border-radius: 12px;
+  text-align: center;
+  width: 90%;
+  max-width: 320px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.popup h2 {
+  margin-bottom: 15px;
+  font-size: 20px;
+  color: #333;
+}
+
+.popup-input {
+  width: 100%;
+  padding: 12px;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  transition: border-color 0.3s;
+}
+
+.popup-input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
+.popup-trigger-button,
+.add-user-button,
+.close-popup-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 14px;
+  margin: 5px;
+  transition: background-color 0.3s ease;
+  width: 150px;
+  height: 50px;
+  align-self: center;
+}
+
+.popup-trigger-button:hover,
+.add-user-button:hover,
+.close-popup-button:hover {
+  background-color: #0056b3;
+}
+
   </style>
 </head>
 <body>
@@ -494,9 +640,45 @@ button:hover::before {
         </div>
       {% endfor %}
 
-      <div class="add-friend"><!-- From Uiverse.io by alexroumi --> 
-        <button>Add Friend</button>
+      <div class="add-friend">
+        
       </div>
+
+      <div class="add-friend">
+        
+      </div>
+ <!-- Trigger Button -->
+<button onclick="showPopup()" class="popup-trigger-button">Add Friend</button>
+
+<!-- Popup Overlay -->
+<div class="popup-overlay" id="popup">
+  <div class="popup">
+    <h2>Add User</h2>
+    <input type="text" id="username" placeholder="Enter username" class="popup-input">
+    <button onclick="addUser()" class="add-user-button">Add</button>
+    <br><br>
+    <button onclick="hidePopup()" class="close-popup-button">Close</button>
+  </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+  function showPopup() {
+    document.getElementById("popup").style.display = "flex";
+  }
+
+  function hidePopup() {
+    document.getElementById("popup").style.display = "none";
+  }
+
+  function addUser() {
+    const username = document.getElementById("username").value;
+    alert("Username added: " + username); // Replace with actual logic
+    hidePopup();
+  }
+</script>
+
+
       <div style="padding:10px;"><a href="{% url 'login' %}">Logout</a></div>
     </div>
 
