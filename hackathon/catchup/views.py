@@ -100,3 +100,6 @@ def friends(request):
         "friends": friend_users,
         "friendreqs": friendreq_users
     })
+
+def addfriend(request):
+    return
