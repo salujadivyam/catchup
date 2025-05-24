@@ -6,7 +6,7 @@
         <div class="chat-header-left">
           <div class="friend-avatar"></div>
           <div>
-            <div class="chat-user-name">Divyam Saluja</div>
+            <div class="chat-user-name">{{ friend.username }}</div>
             <div class="chat-user-last-seen">Last seen 2 hours ago</div>
           </div>
         </div>
@@ -20,18 +20,12 @@
       </div>
 
       <div id="chat-box" class="chat-box">
-        <div class="message received">
-          Kya hal chal?
-          <div class="read-receipt">Seen</div>
-        </div>
-        <div class="message sent">
-          Sab badhiya tu bata
-          <div class="read-receipt">Read</div>
-        </div>
-        <div class="message received">
-          Rajma chawal kha raha hu 
-          <div class="read-receipt">Seen</div>
-        </div>
+        {% for message in messages %}
+      <div class="message {% if message.sender == user %}sent{% else %}received{% endif %}">
+      <p><strong>{{ message.sender.username }}:</strong> {{ message.content }}</p>
+      <small>{{ message.timestamp }}</small>
+      </div>
+      {% endfor %}
       </div>
 
       <div class="chat-input-section">

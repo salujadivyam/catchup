@@ -130,3 +130,22 @@ def acceptfriend(request):
 
         return JsonResponse({"success": True, "message": "Friend request accepted."})
     return JsonResponse({"success": False, "error": "Invalid request."})
+
+@login_required
+def get_chat(request, friend_id):
+    friend = get_object_or_404(User, id=friend_id)
+    messages = Message.objects.filter(
+        sender__in=[request.user, friend],
+        receiver__in=[request.user, friend]
+    ).order_by("timestamp")
+
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        return render(request, "catchup/chatroom_partial.html", {
+            "messages": messages,
+            "friend": friend,
+        })
+    else:
+        return render(request, "catchup/chat_page_dark.html", {
+            "messages": messages,
+            "friend": friend,
+        })

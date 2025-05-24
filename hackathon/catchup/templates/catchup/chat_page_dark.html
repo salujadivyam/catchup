@@ -617,6 +617,14 @@ button:hover::before {
   background-color: #0056b3;
 }
 
+#chat-window {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #1b1d27;
+  overflow: hidden;
+}
+
   </style>
 </head>
 <body>
@@ -632,7 +640,7 @@ button:hover::before {
   <div class="app-container">
     <div class="sidebar">
       {% for friend in friends %}
-        <div class="friend">
+        <div class="friend" onclick="loadChat('{{ friend.id }}')" data-user-id="{{ friend.id }}">
         <div class="friend-avatar"></div>
         <div class="friend-info">
           <span class="friend-name">{{ friend.username }}</span>
@@ -641,6 +649,7 @@ button:hover::before {
         </div>
         </div>
       {% endfor %}
+
 
       <div class="add-friend">
         
@@ -712,15 +721,33 @@ button:hover::before {
     }
     return cookieValue;
   }
-</script>
 
+  function loadChat(friendId) {
+  fetch(`/get_chat/${friendId}/`, {
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest'
+    }
+  })
+  .then(response => response.text())
+  .then(html => {
+    const chatWindow = document.getElementById("chat-window");
+    chatWindow.innerHTML = html;
+  })
+  .catch(err => console.error("Error loading chat:", err));
+}
+</script>
 
 
       <div style="padding:10px;"><a href="{% url 'login' %}">Logout</a></div>
       <div style="padding:10px;"><a href="{% url 'friends' %}">View Friends</a></div>
     </div>
 
+    <div id="chat-window">
+
+    </div>
+
     {% block body %}
+
 
     {% endblock %}
     
