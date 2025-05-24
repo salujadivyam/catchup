@@ -12,4 +12,5 @@ urlpatterns = [
     path("chatroom/<int:id>", views.chatroom, name="chatroom"),
     path("acceptfriend", views.acceptfriend, name="acceptfriend"),
     path('get_chat/<int:friend_id>/', views.get_chat, name='get_chat'),
+    path('send_message/<int:friend_id>/', views.send_message, name="send_message")
 ]

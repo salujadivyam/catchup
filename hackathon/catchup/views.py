@@ -3,11 +3,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import JsonResponse
-from django.shortcuts import HttpResponse, HttpResponseRedirect, render, get_object_or_404
+from django.shortcuts import HttpResponse, HttpResponseRedirect, render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 from .models import User, Message, UserProfile, FriendRequest
+from django.utils.timezone import localtime
 
 # Create your views here.
 def index(request):
@@ -149,3 +150,40 @@ def get_chat(request, friend_id):
             "messages": messages,
             "friend": friend,
         })
+
+@login_required
+def send_message(request, friend_id):
+    if request.method == "POST":
+        content = request.POST.get("content")
+        if content:
+            receiver = get_object_or_404(User, id=friend_id)
+            Message.objects.create(
+                sender=request.user,
+                receiver=receiver,
+                content=content
+            )
+
+    # After sending, reload the chat page with messages
+    friend = get_object_or_404(User, id=friend_id)
+    messages = Message.objects.filter(
+        sender__in=[request.user, friend],
+        receiver__in=[request.user, friend]
+    ).order_by("timestamp")
+
+    user = request.user
+    friends = FriendRequest.objects.filter(
+            Q(from_user=user) | Q(to_user=user),
+            accepted=True
+        )
+    friend_users = []
+    for fr in friends:
+        friend_users.append(fr.to_user if fr.from_user == user else fr.from_user)
+
+
+    # Make sure this renders the full layout template
+    return render(request, "catchup/chat_page_dark.html", {
+        "messages": messages,
+        "friend": friend,
+        "friends": friend_users,
+        "user": request.user,
+    })

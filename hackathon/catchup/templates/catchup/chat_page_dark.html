@@ -859,13 +859,10 @@ button:hover::before {
     </div>
 
     <div id="chat-window">
-
-    </div>
-
-    {% block body %}
-
-
+      {% block body %}
+    {% include 'catchup/chatroom_partial.html' %}
     {% endblock %}
+    </div>
     
   </div>
 
