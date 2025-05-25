@@ -14,27 +14,7 @@ from django.utils.timezone import localtime
 def index(request):
     if request.user.is_authenticated:
         user = request.user
-
-        # Get all accepted friend relationships
-        friends = FriendRequest.objects.filter(
-            Q(from_user=user) | Q(to_user=user),
-            accepted=True
-        )
-
-        friend_data = []
-        for fr in friends:
-            friend = fr.to_user if fr.from_user == user else fr.from_user
-
-            # Get the latest message between the user and this friend
-            last_message = Message.objects.filter(
-                Q(sender=user, receiver=friend) | Q(sender=friend, receiver=user)
-            ).order_by("-timestamp").first()
-
-            friend_data.append({
-                "friend": friend,
-                "last_message": last_message
-            })
-
+        friend_data = get_friend_data(user)
         return render(request, "catchup/chat_page_dark.html", {
             "user": user,
             "friends": friend_data
@@ -87,10 +67,6 @@ def signup(request):
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("login"))
-
-def chatroom(request, id):
-
-    return 
 
 def friends(request):
     user = request.user
@@ -152,6 +128,8 @@ def get_chat(request, friend_id):
         sender__in=[request.user, friend],
         receiver__in=[request.user, friend]
     ).order_by("timestamp")
+
+    Message.objects.filter(sender=friend, receiver=request.user, is_read=False).update(is_read=True)
 
     if request.headers.get("x-requested-with") == "XMLHttpRequest":
         return render(request, "catchup/chatroom_partial.html", {
@@ -219,8 +197,21 @@ def get_friend_data(user):
     data = []
     for fr in friends:
         friend = fr.to_user if fr.from_user == user else fr.from_user
+
         last_msg = Message.objects.filter(
             Q(sender=user, receiver=friend) | Q(sender=friend, receiver=user)
         ).order_by("-timestamp").first()
-        data.append({"friend": friend, "last_message": last_msg})
+
+        has_unread = Message.objects.filter(
+            sender=friend,
+            receiver=user,
+            is_read=False
+        ).exists()
+
+        data.append({
+            "friend": friend,
+            "last_message": last_msg,
+            "has_unread": has_unread
+        })
     return data
+

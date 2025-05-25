@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <meta name="csrf-token" content="{{ csrf_token }}">
+{% load static %}
 
 <head>
   <meta charset="UTF-8" />
@@ -613,6 +614,15 @@ button:hover::before {
   align-self: center;
 }
 
+.notification-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
 .popup-trigger-button:hover,
 .add-user-button:hover,
 .close-popup-button:hover {
@@ -758,11 +768,15 @@ button:hover::before {
   <div class="app-container">
     <div class="sidebar">
       {% for entry in friends %}
-  {% with friend=entry.friend message=entry.last_message %}
+  {% with friend=entry.friend message=entry.last_message has_unread=entry.has_unread %}
     <div class="friend" onclick="loadChat('{{ friend.id }}')" data-user-id="{{ friend.id }}">
       <div class="friend-avatar"></div>
       <div class="friend-info">
-        <span class="friend-name">{{ friend.username }}</span>
+        <span class="friend-name">{{ friend.username }}
+          {% if has_unread %}
+        <span class="notification-dot"></span>
+        {% endif %}
+        </span>
         <span class="friend-last-message">
           {% if message %}
             {{ message.content|truncatechars:30 }}
@@ -771,9 +785,10 @@ button:hover::before {
           {% endif %}
         </span>
       </div>
-      </div>
-      {% endwith %}
-    {% endfor %}
+    </div>
+  {% endwith %}
+{% endfor %}
+
 
       <div class="add-friend">
         
@@ -857,7 +872,6 @@ button:hover::before {
     const chatWindow = document.getElementById("chat-window");
     chatWindow.innerHTML = html;
 
-    // Wait for DOM update
     setTimeout(() => {
       const chatBox = document.getElementById("chat-box");
       if (chatBox) {
@@ -866,7 +880,13 @@ button:hover::before {
       } else {
         console.warn("chat-box not found after load");
       }
-    }, 0); // You can use 100ms delay if needed
+    }, 0); 
+
+    const friendCard = document.querySelector(`[data-user-id="${friendId}"]`);
+    if (friendCard) {
+      const dot = friendCard.querySelector(".notification-dot");
+      if (dot) dot.remove();
+    }
   })
   .catch(err => console.error("Error loading chat:", err));
 }
