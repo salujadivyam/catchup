@@ -354,13 +354,15 @@ button:hover::before {
 
     .chat-box {
       flex: 1;
-      padding: 20px;
+      height: 70vh;                /* ← force fixed height */
       overflow-y: auto;
-      user-select: text;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       gap: 8px;
+      user-select: text;
     }
+
 
     .message {
       max-width: 70%;
@@ -631,7 +633,7 @@ button:hover::before {
   <div class="navbar">
     <div class="navbar-left">
       <div class="app-logo"></div>
-      <div class="app-name">@{{ user }}</div>
+      <div class="app-name"><a href="{% url 'index' %}">@{{ user }}</a></div>
     </div>
  
     <div class="menu">
@@ -678,7 +680,7 @@ button:hover::before {
     <span class="link-title">Status</span>
   </a>
 
-  <a href="#" class="link">
+  <a href="{% url 'settings' %}" class="link">
     <span class="link-icon">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -713,7 +715,7 @@ button:hover::before {
     </span>
     <span class="link-title">Settings</span>
   </a>
-  <a href="#" class="link">
+  <a href="{% url 'profilepage' %}" class="link">
     <span class="link-icon">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -755,17 +757,23 @@ button:hover::before {
 
   <div class="app-container">
     <div class="sidebar">
-      {% for friend in friends %}
-        <div class="friend" onclick="loadChat('{{ friend.id }}')" data-user-id="{{ friend.id }}">
-        <div class="friend-avatar"></div>
-        <div class="friend-info">
-          <span class="friend-name">{{ friend.username }}</span>
-          <span class="friend-last-seen">Last seen 2h ago</span>
-          <span class="friend-last-message">Shtudantsh wot that</span>
-        </div>
-        </div>
-      {% endfor %}
-
+      {% for entry in friends %}
+  {% with friend=entry.friend message=entry.last_message %}
+    <div class="friend" onclick="loadChat('{{ friend.id }}')" data-user-id="{{ friend.id }}">
+      <div class="friend-avatar"></div>
+      <div class="friend-info">
+        <span class="friend-name">{{ friend.username }}</span>
+        <span class="friend-last-message">
+          {% if message %}
+            {{ message.content|truncatechars:30 }}
+          {% else %}
+            No messages yet
+          {% endif %}
+        </span>
+      </div>
+      </div>
+      {% endwith %}
+    {% endfor %}
 
       <div class="add-friend">
         
@@ -848,9 +856,21 @@ button:hover::before {
   .then(html => {
     const chatWindow = document.getElementById("chat-window");
     chatWindow.innerHTML = html;
+
+    // Wait for DOM update
+    setTimeout(() => {
+      const chatBox = document.getElementById("chat-box");
+      if (chatBox) {
+        chatBox.scrollTop = chatBox.scrollHeight;
+        console.log("Scrolled to bottom:", chatBox.scrollTop);
+      } else {
+        console.warn("chat-box not found after load");
+      }
+    }, 0); // You can use 100ms delay if needed
   })
   .catch(err => console.error("Error loading chat:", err));
 }
+
 </script>
 
 
@@ -884,5 +904,7 @@ button:hover::before {
       cameraInput.value = ''; // Reset input
     });
   </script>
+
+
 </body>
 </html>

@@ -1,4 +1,6 @@
 <div class="chat-section">
+
+  {% if friend %}
   <div class="chat-header">
     <div class="chat-header-left">
       <div class="friend-avatar"></div>
@@ -10,7 +12,6 @@
       ...
     </button>
   </div>
-
   <div id="chat-box" class="chat-box">
     {% for message in messages %}
     <div class="message {% if message.sender == user %}sent{% else %}received{% endif %}">
@@ -19,8 +20,6 @@
     </div>
     {% endfor %}
   </div>
-
-  {% if friend %}
   <form action="{% url 'send_message' friend.id %}" method="POST">
   {% csrf_token %}
   <div class="chat-input-section">
@@ -46,5 +45,9 @@
   {% endif %}
 
 </div>
+
+
+
+
 
 

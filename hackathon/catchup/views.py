@@ -14,22 +14,34 @@ from django.utils.timezone import localtime
 def index(request):
     if request.user.is_authenticated:
         user = request.user
+
+        # Get all accepted friend relationships
         friends = FriendRequest.objects.filter(
             Q(from_user=user) | Q(to_user=user),
             accepted=True
         )
-        friend_users = []
-        for fr in friends:
-            friend_users.append(fr.to_user if fr.from_user == user else fr.from_user)
 
+        friend_data = []
+        for fr in friends:
+            friend = fr.to_user if fr.from_user == user else fr.from_user
+
+            # Get the latest message between the user and this friend
+            last_message = Message.objects.filter(
+                Q(sender=user, receiver=friend) | Q(sender=friend, receiver=user)
+            ).order_by("-timestamp").first()
+
+            friend_data.append({
+                "friend": friend,
+                "last_message": last_message
+            })
 
         return render(request, "catchup/chat_page_dark.html", {
-            "user": user.username,
-            "friends": friend_users
+            "user": user,
+            "friends": friend_data
         })
     else:
         return HttpResponseRedirect(reverse("login"))
-
+    
 def login_view(request):
     if request.method == "POST":
 
@@ -95,7 +107,8 @@ def friends(request):
 
     return render(request, "catchup/friendrequests.html", {
         "friendreqs": friend_requests,
-        "friends": friend_users
+        "friends": get_friend_data(request.user),
+        "friendusers": friend_users
     })
 
 def addfriend(request):
@@ -179,11 +192,35 @@ def send_message(request, friend_id):
     for fr in friends:
         friend_users.append(fr.to_user if fr.from_user == user else fr.from_user)
 
-
-    # Make sure this renders the full layout template
     return render(request, "catchup/chat_page_dark.html", {
         "messages": messages,
         "friend": friend,
         "friends": friend_users,
         "user": request.user,
     })
+
+def profilepage(request):
+    user = request.user
+    return render(request, 'catchup/profile.html', {
+        "user": user,
+        "friends": get_friend_data(request.user)
+    })
+
+def settings(request):
+    return render(request, 'catchup/settings.html', {
+        "friends": get_friend_data(request.user)
+    })
+
+def get_friend_data(user):
+    friends = FriendRequest.objects.filter(
+        Q(from_user=user) | Q(to_user=user),
+        accepted=True
+    )
+    data = []
+    for fr in friends:
+        friend = fr.to_user if fr.from_user == user else fr.from_user
+        last_msg = Message.objects.filter(
+            Q(sender=user, receiver=friend) | Q(sender=friend, receiver=user)
+        ).order_by("-timestamp").first()
+        data.append({"friend": friend, "last_message": last_msg})
+    return data
