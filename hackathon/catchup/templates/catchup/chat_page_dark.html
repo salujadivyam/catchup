@@ -444,6 +444,11 @@ button:hover::before {
       fill: white;
     }
 
+    .select-a-friend {
+      padding: 20px;
+      padding-left: 50px;
+    }
+
     .attach-button:hover {
       background-color: #445997;
       fill: white;
@@ -648,7 +653,7 @@ button:hover::before {
  
     <div class="menu">
   
-  <a href="#" class="link">
+  <a href="{% url 'friends' %}" class="link">
     <span class="link-icon">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -687,7 +692,7 @@ button:hover::before {
         ></path>
       </svg>
     </span>
-    <span class="link-title">Status</span>
+    <span class="link-title">Friends</span>
   </a>
 
   <a href="{% url 'settings' %}" class="link">
@@ -725,6 +730,7 @@ button:hover::before {
     </span>
     <span class="link-title">Settings</span>
   </a>
+
   <a href="{% url 'profilepage' %}" class="link">
     <span class="link-icon">
       <svg
@@ -756,6 +762,39 @@ button:hover::before {
     </span>
     <span class="link-title">Profile</span>
   </a>
+
+  <a href="{% url 'login' %}" class="link">
+    <span class="link-icon">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="192"
+        height="192"
+        fill="currentColor"
+        viewBox="0 0 256 256"
+      >
+        <rect width="256" height="256" fill="none"></rect>
+        <circle
+          cx="128"
+          cy="96"
+          r="64"
+          fill="none"
+          stroke="currentColor"
+          stroke-miterlimit="10"
+          stroke-width="16"
+        ></circle>
+        <path
+          d="M30.989,215.99064a112.03731,112.03731,0,0,1,194.02311.002"
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="16"
+        ></path>
+      </svg>
+    </span>
+    <span class="link-title">Log Out</span>
+  </a>
+
 </div>
 
     </div>
@@ -892,10 +931,6 @@ button:hover::before {
 }
 
 </script>
-
-
-      <div style="padding:10px;"><a href="{% url 'login' %}">Logout</a></div>
-      <div style="padding:10px;"><a href="{% url 'friends' %}">View Friends</a></div>
     </div>
 
     <div id="chat-window">
@@ -905,26 +940,6 @@ button:hover::before {
     </div>
     
   </div>
-
-  <script>
-    // Link camera button to hidden file input
-    const cameraButton = document.getElementById('cameraButton');
-    const cameraInput = document.getElementById('cameraInput');
-
-    cameraButton.addEventListener('click', () => {
-      cameraInput.click();
-    });
-
-    cameraInput.addEventListener('change', (event) => {
-      const files = event.target.files;
-      if (files.length > 0) {
-        alert(`Selected video file: ${files[0].name}`);
-        // Here you can add upload or preview functionality
-      }
-      cameraInput.value = ''; // Reset input
-    });
-  </script>
-
 
 </body>
 </html>
