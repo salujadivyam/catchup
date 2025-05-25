@@ -195,7 +195,7 @@ def send_message(request, friend_id):
     return render(request, "catchup/chat_page_dark.html", {
         "messages": messages,
         "friend": friend,
-        "friends": friend_users,
+        "friends": get_friend_data(request.user),
         "user": request.user,
     })
 
