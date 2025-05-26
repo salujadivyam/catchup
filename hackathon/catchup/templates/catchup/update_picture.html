@@ -1,0 +1,17 @@
+{% extends "catchup/chat_page_dark.html" %}
+
+{% block body %}
+<div style="padding: 20px;">
+  <h2>Set Profile Picture by URL</h2>
+
+  {% if error %}
+    <p style="color: red;">{{ error }}</p>
+  {% endif %}
+
+  <form method="POST">
+    {% csrf_token %}
+    <input type="url" name="image_url" placeholder="https://example.com/image.jpg" required>
+    <button type="submit">Save</button>
+  </form>
+</div>
+{% endblock %}

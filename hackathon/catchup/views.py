@@ -202,6 +202,8 @@ def get_friend_data(user):
             Q(sender=user, receiver=friend) | Q(sender=friend, receiver=user)
         ).order_by("-timestamp").first()
 
+        profile = UserProfile.objects.filter(user=friend).first()
+
         has_unread = Message.objects.filter(
             sender=friend,
             receiver=user,
@@ -211,7 +213,59 @@ def get_friend_data(user):
         data.append({
             "friend": friend,
             "last_message": last_msg,
-            "has_unread": has_unread
+            "has_unread": has_unread,
+            "profile_picture": profile.profile_picture if profile else "https://example.com/default.jpg"
         })
     return data
 
+@login_required
+def change_username(request):
+    if request.method == "POST":
+        new_username = request.POST.get("username")
+
+        if not new_username:
+            return render(request, "catchup/change_username.html", {
+                "error": "Username cannot be empty.",
+                "friends": get_friend_data(request.user)
+            })
+
+        if User.objects.filter(username=new_username).exists():
+            return render(request, "catchup/change_username.html", {
+                "error": "Username already taken.",
+                "friends": get_friend_data(request.user)
+            })
+
+        try:
+            request.user.username = new_username
+            request.user.save()
+            return redirect("index")  # or wherever you want
+        except IntegrityError:
+            return render(request, "catchup/change_username.html", {
+                "error": "An error occurred. Please try again.",
+                "friends": get_friend_data(request.user)
+            })
+
+    return render(request, "catchup/change_username.html", {
+        "friends": get_friend_data(request.user)
+    })
+
+@login_required
+def update_profile_picture(request):
+    if request.method == "POST":
+        image_url = request.POST.get("image_url")
+
+        if not image_url:
+            return render(request, "catchup/update_picture.html", {
+                "error": "Please enter a valid image URL.",
+                "friends": get_friend_data(request.user)
+            })
+
+        profile = request.user.userprofile
+        profile.profile_picture = image_url
+        profile.save()
+
+        return redirect("index")
+
+    return render(request, "catchup/update_picture.html", {
+        "friends": get_friend_data(request.user)
+    })

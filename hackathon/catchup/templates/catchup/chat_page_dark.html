@@ -652,50 +652,8 @@ button:hover::before {
     </div>
  
     <div class="menu">
-  
-  <a href="{% url 'friends' %}" class="link">
-    <span class="link-icon">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="192"
-        height="192"
-        fill="currentColor"
-        viewBox="0 0 256 256"
-      >
-        <rect width="256" height="256" fill="none"></rect>
-        <polyline
-          points="76.201 132.201 152.201 40.201 216 40 215.799 103.799 123.799 179.799"
-          fill="none"
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="16"
-        ></polyline>
-        <line
-          x1="100"
-          y1="156"
-          x2="160"
-          y2="96"
-          fill="none"
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="16"
-        ></line>
-        <path
-          d="M82.14214,197.45584,52.201,227.397a8,8,0,0,1-11.31371,0L28.603,215.11268a8,8,0,0,1,0-11.31371l29.94113-29.94112a8,8,0,0,0,0-11.31371L37.65685,141.65685a8,8,0,0,1,0-11.3137l12.6863-12.6863a8,8,0,0,1,11.3137,0l76.6863,76.6863a8,8,0,0,1,0,11.3137l-12.6863,12.6863a8,8,0,0,1-11.3137,0L93.45584,197.45584A8,8,0,0,0,82.14214,197.45584Z"
-          fill="none"
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="16"
-        ></path>
-      </svg>
-    </span>
-    <span class="link-title">Friends</span>
-  </a>
 
-  <a href="{% url 'settings' %}" class="link">
+  <a href="{% url 'friends' %}" class="link">
     <span class="link-icon">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -728,7 +686,7 @@ button:hover::before {
         ></line>
       </svg>
     </span>
-    <span class="link-title">Settings</span>
+    <span class="link-title">Friends</span>
   </a>
 
   <a href="{% url 'profilepage' %}" class="link">
@@ -773,17 +731,27 @@ button:hover::before {
         viewBox="0 0 256 256"
       >
         <rect width="256" height="256" fill="none"></rect>
-        <circle
-          cx="128"
-          cy="96"
-          r="64"
+        <polyline
+          points="76.201 132.201 152.201 40.201 216 40 215.799 103.799 123.799 179.799"
           fill="none"
           stroke="currentColor"
-          stroke-miterlimit="10"
+          stroke-linecap="round"
+          stroke-linejoin="round"
           stroke-width="16"
-        ></circle>
+        ></polyline>
+        <line
+          x1="100"
+          y1="156"
+          x2="160"
+          y2="96"
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="16"
+        ></line>
         <path
-          d="M30.989,215.99064a112.03731,112.03731,0,0,1,194.02311.002"
+          d="M82.14214,197.45584,52.201,227.397a8,8,0,0,1-11.31371,0L28.603,215.11268a8,8,0,0,1,0-11.31371l29.94113-29.94112a8,8,0,0,0,0-11.31371L37.65685,141.65685a8,8,0,0,1,0-11.3137l12.6863-12.6863a8,8,0,0,1,11.3137,0l76.6863,76.6863a8,8,0,0,1,0,11.3137l-12.6863,12.6863a8,8,0,0,1-11.3137,0L93.45584,197.45584A8,8,0,0,0,82.14214,197.45584Z"
           fill="none"
           stroke="currentColor"
           stroke-linecap="round"
@@ -792,7 +760,7 @@ button:hover::before {
         ></path>
       </svg>
     </span>
-    <span class="link-title">Log Out</span>
+    <span class="link-title">Logout</span>
   </a>
 
 </div>
@@ -809,7 +777,7 @@ button:hover::before {
       {% for entry in friends %}
   {% with friend=entry.friend message=entry.last_message has_unread=entry.has_unread %}
     <div class="friend" onclick="loadChat('{{ friend.id }}')" data-user-id="{{ friend.id }}">
-      <div class="friend-avatar"></div>
+        <img src="{{ entry.profile_picture }}" alt="{{ friend.username }}" class="friend-avatar" />
       <div class="friend-info">
         <span class="friend-name">{{ friend.username }}
           {% if has_unread %}

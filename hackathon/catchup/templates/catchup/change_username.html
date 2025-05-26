@@ -1,0 +1,17 @@
+{% extends "catchup/chat_page_dark.html" %}
+
+{% block body %}
+<div style="padding: 20px;">
+  <h2>Change Username</h2>
+
+  {% if error %}
+    <p style="color: red;">{{ error }}</p>
+  {% endif %}
+
+  <form method="POST" action="{% url 'change_username' %}">
+    {% csrf_token %}
+    <input type="text" name="username" placeholder="New username" required>
+    <button type="submit">Update</button>
+  </form>
+</div>
+{% endblock %}
